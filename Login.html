@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <link rel="stylesheet" href="style.css" />
+
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap"
+            rel="stylesheet"
+        />
+
+        <meta charset="UTF-8" />
+        <title>Login - Richman Empire</title>
+    </head>
+    <body>
+        <div id="login-box">
+            <h1>Welcome to Richman Empire</h1>
+            <p>Please log in to continue.</p>
+
+            <input type="text" id="username" placeholder="Username" />
+            <input type="password" id="password" placeholder="Password" />
+
+            <button class="login-btn" onclick="attemptLogin()">Enter</button>
+
+            <p
+                id="error-msg"
+                style="color: red; display: none; font-weight: bold"
+            >
+                Incorrect credentials!
+            </p>
+        </div>
+
+        <script src="script.js"></script>
+    </body>
+</html>

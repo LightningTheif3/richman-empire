@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <link rel="stylesheet" href="style.css" />
+
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap"
+            rel="stylesheet"
+        />
+
+        <meta charset="UTF-8" />
+        <title>Richman Empire</title>
+    </head>
+    <body>
+        <div id="topbar">
+            <h1>Richman Empire</h1>
+            <div class="stats">
+                <b>Cash: </b><span id="cash-display">$0</span>
+            </div>
+        </div>
+        <div id="game-container">
+            <button onclick="earnMoney()">Click to earn</button>
+        </div>
+
+        <div id="bottom-bar">
+            <a
+                onclick="window.location.href = 'Richman Empire.html'"
+                class="tab"
+                >Home</a
+            >
+            <a onclick="window.location.href = 'stocks.html'" class="tab"
+                >Stocks</a
+            >
+            <a onclick="window.location.href = 'businesses.html'" class="tab"
+                >Buisnesses</a
+            >
+        </div>
+        <script src="script.js"></script>
+    </body>
+</html>
