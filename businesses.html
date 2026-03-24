@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <link rel="stylesheet" href="style.css" />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap"
+            rel="stylesheet"
+        />
+        <meta charset="UTF-8" />
+        <title>Businesses - Richman Empire</title>
+    </head>
+    <body>
+        <div id="topbar">
+            <h1>Empire Branch</h1>
+            <div id="player-name"></div>
+            <div class="stats">
+                <b>Cash: </b><span id="cash-display">$0</span>
+            </div>
+        </div>
+
+        <div id="game-container">
+            <h2>Buy Businesses</h2>
+
+            <div class="business-card">
+                <h3>Lemonade Stand</h3>
+                <p>Earns: $1 / sec</p>
+                <button onclick="buyBusiness('lemonade', 10, 1)">
+                    Buy for $10
+                </button>
+            </div>
+
+            <div class="business-card">
+                <h3>Game Studio</h3>
+                <p>Earns: $10 / sec</p>
+                <button onclick="buyBusiness('studio', 100, 10)">
+                    Buy for $100
+                </button>
+            </div>
+        </div>
+
+        <div id="bottom-bar">
+            <a
+                onclick="window.location.href = 'Richman Empire.html'"
+                class="tab"
+                >Home</a
+            >
+            <a onclick="window.location.href = 'stocks.html'" class="tab"
+                >Stocks</a
+            >
+            <a onclick="window.location.href = 'businesses.html'" class="tab"
+                >Businesses</a
+            >
+        </div>
+
+        <script src="script.js"></script>
+    </body>
+</html>

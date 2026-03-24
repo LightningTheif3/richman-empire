@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <link rel="stylesheet" href="style.css" />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap"
+            rel="stylesheet"
+        />
+        <meta charset="UTF-8" />
+        <title>Stock Market - Richman Empire</title>
+    </head>
+    <body>
+        <div id="topbar">
+            <h1>Wall Street</h1>
+            <div id="player-name"></div>
+            <div class="stats">
+                <b>Cash: </b><span id="cash-display">$0</span>
+            </div>
+        </div>
+
+        <div id="game-container">
+            <div class="stock-box">
+                <h2 id="stock-name">Fruit Inc. (FRUT)</h2>
+                <p id="stock-price-display">Current Price: $50</p>
+                <p id="stocks-owned">Stocks Owned: 0</p>
+
+                <div class="button-group">
+                    <button class="buy-btn" onclick="buyStock()">
+                        Buy Stock
+                    </button>
+                    <button class="sell-btn" onclick="sellStock()">
+                        Sell Stock
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="bottom-bar">
+            <a href="Richman Empire.html" class="tab">Home</a>
+            <a href="stocks.html" class="tab active">Stocks</a>
+            <a href="businesses.html" class="tab">Businesses</a>
+        </div>
+
+        <script src="script.js"></script>
+    </body>
+</html>

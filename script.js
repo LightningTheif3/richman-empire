@@ -2,15 +2,22 @@ let playerCash = 0;
 const cashDisplayElement = document.getElementById("cash-display");
 const currentPlayer = localStorage.getItem("currentPlayer");
 
-// --- 1. THE STARTUP HANDSHAKE ---
-// This runs the SECOND the page loads
-async function loadPlayerData() {
-  if (!currentPlayer) {
-    window.location.href = "Login.html"; // Kick them out if not logged in
-    return;
-  }
+// --- REDIRECT IF NOT LOGGED IN ---
+if (!currentPlayer && !window.location.href.includes("Login.html")) {
+  window.location.href = "Login.html";
+}
 
-  // Ask the server for the LATEST data from MongoDB
+// --- DISPLAY NAME & INITIAL CASH ---
+if (document.getElementById("player-name") && currentPlayer) {
+  document.getElementById("player-name").textContent =
+    currentPlayer + "'s Empire";
+}
+
+// Fetch the latest cash from the server immediately on every page load
+async function syncWithDatabase() {
+  if (!currentPlayer) return;
+
+  // We reuse the /login route with a special flag to just get data
   const response = await fetch("/login", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -18,12 +25,13 @@ async function loadPlayerData() {
   });
 
   const result = await response.json();
-
   if (result.success) {
-    playerCash = result.cash; // Set the variable to what's in the vault
-    cashDisplayElement.textContent = "$" + playerCash;
+    playerCash = result.cash;
+    if (cashDisplayElement) cashDisplayElement.textContent = "$" + playerCash;
   }
 }
+
+syncWithDatabase();
 
 // Run the load function immediately
 loadPlayerData();
@@ -104,4 +112,62 @@ async function createAccount() {
   } else {
     errorMsg.style.color = "red";
   }
+}
+
+let cashPerSecond = 0;
+
+// This runs every 1 second to give passive income
+setInterval(() => {
+  if (cashPerSecond > 0) {
+    playerCash += cashPerSecond;
+    if (cashDisplayElement) {
+      cashDisplayElement.textContent = "$" + playerCash;
+    }
+  }
+}, 1000);
+
+function buyBusiness(name, cost, earnings) {
+  if (playerCash >= cost) {
+    playerCash -= cost;
+    cashPerSecond += earnings;
+    cashDisplayElement.textContent = "$" + playerCash;
+    alert("You bought a " + name + "!");
+  } else {
+    alert("Not enough cash!");
+  }
+}
+
+let stockPrice = 50;
+let userStocks = 0;
+
+// Make the stock price bounce every 3 seconds
+setInterval(() => {
+  let change = Math.floor(Math.random() * 11) - 5; // Random number between -5 and +5
+  stockPrice += change;
+  if (stockPrice < 1) stockPrice = 1; // Don't let it hit $0
+
+  const priceTag = document.getElementById("stock-price-display");
+  if (priceTag) priceTag.textContent = "Current Price: $" + stockPrice;
+}, 3000);
+
+function buyStock() {
+  if (playerCash >= stockPrice) {
+    playerCash -= stockPrice;
+    userStocks++;
+    updateStockUI();
+  }
+}
+
+function sellStock() {
+  if (userStocks > 0) {
+    playerCash += stockPrice;
+    userStocks--;
+    updateStockUI();
+  }
+}
+
+function updateStockUI() {
+  if (cashDisplayElement) cashDisplayElement.textContent = "$" + playerCash;
+  const stockOwnedTag = document.getElementById("stocks-owned");
+  if (stockOwnedTag) stockOwnedTag.textContent = "Stocks Owned: " + userStocks;
 }

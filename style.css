@@ -167,3 +167,44 @@ button:active {
     color: black;
     text-align: center;
 }
+
+/* Styling for the Stock/Business Cards */
+.stock-box,
+.business-card {
+    background: #f0f4f8;
+    padding: 20px;
+    border-radius: 15px;
+    border: 3px solid #333;
+    text-align: center;
+    width: 90%;
+    margin-bottom: 20px;
+}
+
+/* Fix for the bottom bar navigation */
+.tab {
+    cursor: pointer;
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+    padding: 10px;
+}
+
+.tab.active {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+}
+
+.button-group {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+/* Make game buttons smaller than the giant 'Click to Earn' button */
+.buy-btn,
+.sell-btn {
+    height: auto;
+    width: auto;
+    padding: 15px 25px;
+}
