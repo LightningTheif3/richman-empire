@@ -208,3 +208,69 @@ button:active {
     width: auto;
     padding: 15px 25px;
 }
+
+/* This targets the buttons inside the game container, but NOT the big money button */
+#game-container button {
+    width: auto; /* Stop them from stretching across the screen */
+    height: auto; /* Stop them from being tall */
+    padding: 10px 20px;
+    font-size: 16px; /* Normal text size */
+    margin: 5px;
+    cursor: pointer;
+    border-radius: 8px;
+}
+
+/* If you have a business-card class, make it tidy */
+.business-card,
+.stock-box {
+    background: #f9f9f9;
+    border: 2px solid #ddd;
+    border-radius: 12px;
+    padding: 15px;
+    margin: 10px auto;
+    width: 80%;
+    max-width: 400px; /* Keeps them from getting too wide on desktop */
+}
+
+/* Keep the big money button big, but only if it has a specific ID */
+#money-button {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    font-size: 24px;
+}
+
+#custom-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    border: 4px solid #333;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    text-align: center;
+    min-width: 250px;
+}
+
+#custom-popup p {
+    font-family: "Comic Neue", cursive;
+    font-weight: bold;
+    font-size: 18px;
+    margin-bottom: 15px;
+}
+
+#custom-popup button {
+    background: #4caf50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.hidden {
+    display: none !important;
+}

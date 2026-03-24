@@ -7,6 +7,46 @@ let userStocks = 0;
 const cashDisplayElement = document.getElementById("cash-display");
 const currentPlayer = localStorage.getItem("currentPlayer");
 
+function showPopup(message) {
+  const popup = document.getElementById("custom-popup");
+  const msgTag = document.getElementById("popup-message");
+
+  if (popup && msgTag) {
+    msgTag.textContent = message;
+    popup.classList.remove("hidden");
+  }
+}
+
+function closePopup() {
+  const popup = document.getElementById("custom-popup");
+  if (popup) popup.classList.add("hidden");
+}
+
+setInterval(() => {
+  if (cashPerSecond > 0) {
+    playerCash += cashPerSecond;
+    updateUI();
+  }
+}, 1000);
+
+function buyBusiness(name, cost, earnings) {
+  if (playerCash >= cost) {
+    playerCash -= cost;
+    cashPerSecond += earnings;
+    updateUI();
+    saveGame();
+    showPopup("Success! You bought a " + name);
+  } else {
+    showPopup("You need more cash!");
+  }
+}
+
+function updateUI() {
+  if (cashDisplayElement) {
+    cashDisplayElement.textContent = "$" + Math.floor(playerCash);
+  }
+}
+
 // --- 2. INITIALIZATION & REDIRECTS ---
 if (!currentPlayer && !window.location.href.includes("Login.html")) {
   window.location.href = "Login.html";
@@ -69,9 +109,9 @@ function buyBusiness(name, cost, earnings) {
     cashPerSecond += earnings;
     if (cashDisplayElement) cashDisplayElement.textContent = "$" + playerCash;
     saveGame();
-    alert("Success! You bought a " + name);
+    showPopup("Success! You bought a " + name);
   } else {
-    alert("You need more cash!");
+    showPopup("You need more cash!");
   }
 }
 
@@ -92,7 +132,7 @@ function buyStock() {
     updateStockUI();
     saveGame();
   } else {
-    alert("Not enough cash!");
+    showPopup("Not enough cash!");
   }
 }
 
@@ -103,7 +143,7 @@ function sellStock() {
     updateStockUI();
     saveGame();
   } else {
-    alert("You don't have any stocks to sell!");
+    showPopup("You don't have any stocks to sell!");
   }
 }
 
