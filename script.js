@@ -1,11 +1,32 @@
 let playerCash = 0;
 const cashDisplayElement = document.getElementById("cash-display");
+const currentPlayer = localStorage.getItem("currentPlayer");
 
-// --- LOAD SAVED CASH ON START ---
-if (cashDisplayElement && localStorage.getItem("currentCash")) {
-  playerCash = parseInt(localStorage.getItem("currentCash"));
-  cashDisplayElement.textContent = "$" + playerCash;
+// --- 1. THE STARTUP HANDSHAKE ---
+// This runs the SECOND the page loads
+async function loadPlayerData() {
+  if (!currentPlayer) {
+    window.location.href = "Login.html"; // Kick them out if not logged in
+    return;
+  }
+
+  // Ask the server for the LATEST data from MongoDB
+  const response = await fetch("/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username: currentPlayer, password: "LOAD_ONLY" }),
+  });
+
+  const result = await response.json();
+
+  if (result.success) {
+    playerCash = result.cash; // Set the variable to what's in the vault
+    cashDisplayElement.textContent = "$" + playerCash;
+  }
 }
+
+// Run the load function immediately
+loadPlayerData();
 
 function earnMoney() {
   playerCash += 1;
@@ -27,7 +48,6 @@ setInterval(async () => {
 }, 5000);
 
 // --- THE BOUNCER & NAME TAG ---
-const currentPlayer = localStorage.getItem("currentPlayer");
 const playerNameDisplay = document.getElementById("player-name");
 
 if (playerNameDisplay && currentPlayer) {
