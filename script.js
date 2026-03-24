@@ -1,13 +1,17 @@
+// --- 1. GLOBAL VARIABLES ---
 let playerCash = 0;
+let cashPerSecond = 0;
+let stockPrice = 50;
+let userStocks = 0;
+
 const cashDisplayElement = document.getElementById("cash-display");
 const currentPlayer = localStorage.getItem("currentPlayer");
 
-// --- REDIRECT IF NOT LOGGED IN ---
+// --- 2. INITIALIZATION & REDIRECTS ---
 if (!currentPlayer && !window.location.href.includes("Login.html")) {
   window.location.href = "Login.html";
 }
 
-// --- DISPLAY NAME & INITIAL CASH ---
 if (document.getElementById("player-name") && currentPlayer) {
   document.getElementById("player-name").textContent =
     currentPlayer + "'s Empire";
@@ -17,7 +21,6 @@ if (document.getElementById("player-name") && currentPlayer) {
 async function syncWithDatabase() {
   if (!currentPlayer) return;
 
-  // We reuse the /login route with a special flag to just get data
   const response = await fetch("/login", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -33,40 +36,84 @@ async function syncWithDatabase() {
 
 syncWithDatabase();
 
-// Run the load function immediately
-loadPlayerData();
-
+// --- 3. CORE ACTIONS ---
 function earnMoney() {
   playerCash += 1;
-  cashDisplayElement.textContent = "$" + playerCash;
+  if (cashDisplayElement) cashDisplayElement.textContent = "$" + playerCash;
 }
 
-// --- DATABASE AUTO-SAVE (Runs every 5 seconds) ---
-setInterval(async () => {
-  const currentPlayer = localStorage.getItem("currentPlayer");
-
-  if (currentPlayer && document.getElementById("game-container")) {
+async function saveGame() {
+  const user = localStorage.getItem("currentPlayer");
+  if (user) {
     await fetch("/save", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username: currentPlayer, cash: playerCash }),
+      body: JSON.stringify({ username: user, cash: playerCash }),
     });
-    console.log("Game auto-saved to database!");
+    console.log("Game saved!");
   }
-}, 5000);
-
-// --- THE BOUNCER & NAME TAG ---
-const playerNameDisplay = document.getElementById("player-name");
-
-if (playerNameDisplay && currentPlayer) {
-  playerNameDisplay.textContent = currentPlayer + "'s Empire";
 }
 
-if (document.getElementById("game-container") && !currentPlayer) {
-  window.location.href = "Login.html";
+// --- 4. PASSIVE INCOME SYSTEM ---
+setInterval(() => {
+  if (cashPerSecond > 0) {
+    playerCash += cashPerSecond;
+    if (cashDisplayElement) cashDisplayElement.textContent = "$" + playerCash;
+  }
+}, 1000);
+
+// --- 5. BUSINESS SYSTEM ---
+function buyBusiness(name, cost, earnings) {
+  if (playerCash >= cost) {
+    playerCash -= cost;
+    cashPerSecond += earnings;
+    if (cashDisplayElement) cashDisplayElement.textContent = "$" + playerCash;
+    saveGame();
+    alert("Success! You bought a " + name);
+  } else {
+    alert("You need more cash!");
+  }
 }
 
-// --- LOGIN AND REGISTER FUNCTIONS ---
+// --- 6. STOCK SYSTEM ---
+setInterval(() => {
+  let change = Math.floor(Math.random() * 11) - 5; // -5 to +5
+  stockPrice += change;
+  if (stockPrice < 1) stockPrice = 1;
+
+  const priceTag = document.getElementById("stock-price-display");
+  if (priceTag) priceTag.textContent = "Current Price: $" + stockPrice;
+}, 3000);
+
+function buyStock() {
+  if (playerCash >= stockPrice) {
+    playerCash -= stockPrice;
+    userStocks++;
+    updateStockUI();
+    saveGame();
+  } else {
+    alert("Not enough cash!");
+  }
+}
+
+function sellStock() {
+  if (userStocks > 0) {
+    playerCash += stockPrice;
+    userStocks--;
+    updateStockUI();
+    saveGame();
+  } else {
+    alert("You don't have any stocks to sell!");
+  }
+}
+
+function updateStockUI() {
+  if (cashDisplayElement) cashDisplayElement.textContent = "$" + playerCash;
+  const stockOwnedTag = document.getElementById("stocks-owned");
+  if (stockOwnedTag) stockOwnedTag.textContent = "Stocks Owned: " + userStocks;
+}
+
+// --- 7. AUTHENTICATION ---
 async function loginAccount() {
   const user = document.getElementById("username").value;
   const pass = document.getElementById("password").value;
@@ -79,15 +126,12 @@ async function loginAccount() {
   });
 
   const result = await response.json();
-
   if (result.success) {
     localStorage.setItem("currentPlayer", user);
-    localStorage.setItem("currentCash", result.cash); // Save their loaded money!
     window.location.href = "Richman Empire.html";
   } else {
     errorMsg.textContent = result.message;
     errorMsg.style.display = "block";
-    errorMsg.style.color = "red";
   }
 }
 
@@ -103,71 +147,10 @@ async function createAccount() {
   });
 
   const result = await response.json();
-
   errorMsg.textContent = result.message;
   errorMsg.style.display = "block";
-
-  if (result.success) {
-    errorMsg.style.color = "green";
-  } else {
-    errorMsg.style.color = "red";
-  }
+  errorMsg.style.color = result.success ? "green" : "red";
 }
 
-let cashPerSecond = 0;
-
-// This runs every 1 second to give passive income
-setInterval(() => {
-  if (cashPerSecond > 0) {
-    playerCash += cashPerSecond;
-    if (cashDisplayElement) {
-      cashDisplayElement.textContent = "$" + playerCash;
-    }
-  }
-}, 1000);
-
-function buyBusiness(name, cost, earnings) {
-  if (playerCash >= cost) {
-    playerCash -= cost;
-    cashPerSecond += earnings;
-    cashDisplayElement.textContent = "$" + playerCash;
-    alert("You bought a " + name + "!");
-  } else {
-    alert("Not enough cash!");
-  }
-}
-
-let stockPrice = 50;
-let userStocks = 0;
-
-// Make the stock price bounce every 3 seconds
-setInterval(() => {
-  let change = Math.floor(Math.random() * 11) - 5; // Random number between -5 and +5
-  stockPrice += change;
-  if (stockPrice < 1) stockPrice = 1; // Don't let it hit $0
-
-  const priceTag = document.getElementById("stock-price-display");
-  if (priceTag) priceTag.textContent = "Current Price: $" + stockPrice;
-}, 3000);
-
-function buyStock() {
-  if (playerCash >= stockPrice) {
-    playerCash -= stockPrice;
-    userStocks++;
-    updateStockUI();
-  }
-}
-
-function sellStock() {
-  if (userStocks > 0) {
-    playerCash += stockPrice;
-    userStocks--;
-    updateStockUI();
-  }
-}
-
-function updateStockUI() {
-  if (cashDisplayElement) cashDisplayElement.textContent = "$" + playerCash;
-  const stockOwnedTag = document.getElementById("stocks-owned");
-  if (stockOwnedTag) stockOwnedTag.textContent = "Stocks Owned: " + userStocks;
-}
+// --- 8. AUTO-SAVE INTERVAL ---
+setInterval(saveGame, 5000);
