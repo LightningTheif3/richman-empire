@@ -9,7 +9,8 @@ app.use(express.static(__dirname));
 // --- 1. CONNECT TO THE DATABASE ---
 // Paste your connection string here.
 // MAKE SURE to replace <password> with your actual database password!
-const mongoURI = "PASTE_YOUR_MONGODB_STRING_HERE";
+const mongoURI =
+  "mongodb+srv://lightningthief3:sEOga04Fbsz37W4g@cluster0.c2sjamf.mongodb.net/?appName=Cluster0";
 
 mongoose
   .connect(mongoURI)
@@ -67,6 +68,19 @@ app.post("/login", async (req, res) => {
     }
   } catch (error) {
     res.json({ success: false, message: "Server error logging in." });
+  }
+});
+
+// --- SAVE MONEY ---
+app.post("/save", async (req, res) => {
+  const { username, cash } = req.body;
+
+  try {
+    // Find the player and update their cash amount
+    await User.findOneAndUpdate({ username: username }, { cash: cash });
+    res.json({ success: true });
+  } catch (error) {
+    res.json({ success: false, message: "Error saving game." });
   }
 });
 
