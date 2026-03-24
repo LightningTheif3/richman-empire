@@ -159,3 +159,11 @@ button:active {
     background-color: #a482c4;
     border-radius: 20px;
 }
+
+#player-name {
+    font-size: 27.5px;
+    font-weight: bold;
+    font-family: "Comic Neue", cursive;
+    color: black;
+    text-align: center;
+}
